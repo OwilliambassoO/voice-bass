@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Caches de teste / lint / cobertura
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Node
+node_modules/
+frontend/node_modules/
+
+# Temp/output files
+*.wav
+*.mp3
+!docs/**
+
+# Mídia de teste/avaliação: NÃO publicar (direitos de terceiros e/ou peso).
+# Inclui o clipe de referência da voz-alvo e as gravações de teste de tela.
+*.mp4
+# Artefatos do harness de avaliação (regeneráveis; incluem modelo ECAPA baixado)
+backend/eval_out/
+
+# Modelos de voz RVC: NÃO publicar (clones de voz; ver NOTICE). O usuário
+# adiciona os seus em backend/voices/. Mantém só a pasta versionada.
+backend/voices/*
+!backend/voices/.gitkeep
+
+# Build / distribuição (gerados por build/build-backend-runtime.ps1 e electron-builder)
+dist/
+*.exe
+
+# Environment
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# Claude Code: configurações locais por máquina (caminhos e permissões do usuário)
+.claude/settings.local.json
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store

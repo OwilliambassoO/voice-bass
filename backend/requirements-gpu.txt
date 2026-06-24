@@ -1,0 +1,14 @@
+# Torch com suporte CUDA para o build GPU do Voice Bass.
+#
+# Instalado ANTES de openai-whisper e de requirements.txt para fixar a variante
+# CUDA do torch/torchaudio; as demais dependências (que listam torch sem versão)
+# então o consideram satisfeito e não baixam a build CPU por cima.
+#
+# Versão fixada em 2.11.0 para casar com a stack CPU de requirements.txt e
+# preservar a compatibilidade com rvc-python/fairseq (CLAUDE.md). A 2.11.0 está
+# disponível em cu126 e cu128; cu128 é a recomendada para GPUs Ada (ex.: RTX 40xx).
+# Ajuste a tag cuXXX conforme o toolkit CUDA alvo, confirmando que a versão existe
+# no índice: python -m pip index versions torch --index-url <url>.
+--index-url https://download.pytorch.org/whl/cu128
+torch==2.11.0
+torchaudio==2.11.0

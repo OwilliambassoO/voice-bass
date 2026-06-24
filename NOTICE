@@ -1,0 +1,62 @@
+Voice Bass
+Copyright (c) William Basso
+Licensed under the MIT License (see LICENSE / package.json "license": "MIT").
+
+================================================================================
+Componentes de terceiros distribuídos nos instaladores (builds CPU/GPU)
+================================================================================
+
+Os instaladores autocontidos do Voice Bass embutem software de terceiros, cada
+um sob sua própria licença. Esta lista resume os principais componentes e suas
+licenças; as licenças completas acompanham cada pacote em seus respectivos
+diretórios dentro do runtime empacotado (python/Lib/site-packages e ffmpeg/).
+
+Runtime Python
+
+- CPython (python-build-standalone) ......... PSF License
+  <https://github.com/astral-sh/python-build-standalone>
+
+Stack de IA / áudio (Python)
+
+- PyTorch (torch, torchaudio) ............... BSD-3-Clause
+- OpenAI Whisper ............................ MIT
+- edge-tts .................................. GPL-3.0
+- audioseal (Meta) .......................... MIT
+- rvc-python ................................ MIT
+- fairseq (Meta) ............................ MIT
+- omegaconf ................................. BSD-3-Clause
+- numpy ..................................... BSD-3-Clause
+- soundfile (libsndfile) .................... BSD-3-Clause / LGPL-2.1 (libsndfile)
+- FastAPI / Starlette / Uvicorn ............. BSD-3-Clause / MIT
+- ffmpeg-python ............................. Apache-2.0
+
+Frontend
+
+- Electron .................................. MIT
+- electron-builder .......................... MIT
+
+Binário externo
+
+- FFmpeg (build estático, gyan.dev) ......... LGPL-2.1+ / GPL (conforme o build)
+  <https://www.gyan.dev/ffmpeg/builds/>
+  Código-fonte do FFmpeg: <https://ffmpeg.org/download.html>
+
+Modelos pré-baixados embutidos
+
+- Whisper "base" (pesos OpenAI) ............. MIT
+- AudioSeal watermarker (Meta) .............. licença do modelo conforme o card AudioSeal
+
+================================================================================
+Observações
+================================================================================
+
+- edge-tts é GPL-3.0; ele é invocado como dependência e requer conexão de
+  internet em tempo de execução (chama servidores de TTS da Microsoft).
+- O FFmpeg "essentials" da gyan.dev pode incluir componentes sob GPL. Ao
+  redistribuir os instaladores, respeite os termos de cada licença (incluindo a
+  disponibilização de código-fonte quando exigido).
+- Modelos de voz RVC (.pth/.index) adicionados pelo usuário em backend/voices/
+  NÃO são distribuídos com o app e estão sujeitos às licenças de seus autores.
+
+Esta lista é informativa e pode não ser exaustiva. Em caso de dúvida sobre uma
+dependência específica, consulte a licença incluída no respectivo pacote.

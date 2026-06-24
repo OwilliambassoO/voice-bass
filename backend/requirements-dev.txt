@@ -1,0 +1,4 @@
+# Dependências apenas de desenvolvimento/teste (não afetam a execução do app).
+# Instale com:  python -m pip install -r requirements-dev.txt
+pytest
+httpx

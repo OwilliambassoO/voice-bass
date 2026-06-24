@@ -1,0 +1,87 @@
+name: Release
+
+# Gera os instaladores Windows autocontidos do Voice Bass (CPU e GPU) e os
+# publica como assets de um GitHub Release ao empurrar uma tag "v*".
+#
+# O runner windows-latest já traz as VS C++ Build Tools necessárias para compilar
+# fairseq. Cada variante é construída em paralelo (matrix). O job GPU baixa o torch
+# CUDA mas NÃO precisa de GPU para empacotar (torch.cuda.is_available() = False no
+# runner é esperado e não falha o build).
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      variant:
+        description: "Variante a construir"
+        type: choice
+        options: [both, cpu, gpu]
+        default: both
+
+permissions:
+  contents: write # necessário para criar/atualizar o Release
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [cpu, gpu]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # Filtro do workflow_dispatch: pula a variante não solicitada.
+      - name: Resolver variante
+        id: gate
+        shell: pwsh
+        run: |
+          $sel = "${{ github.event.inputs.variant }}"
+          if ($sel -and $sel -ne "both" -and $sel -ne "${{ matrix.variant }}") {
+            echo "skip=true" >> $env:GITHUB_OUTPUT
+          } else {
+            echo "skip=false" >> $env:GITHUB_OUTPUT
+          }
+
+      - name: Construir runtime do backend (${{ matrix.variant }})
+        if: steps.gate.outputs.skip == 'false'
+        shell: pwsh
+        run: ./build/build-backend-runtime.ps1 -Variant ${{ matrix.variant }} -Clean
+
+      - name: Instalar dependências do frontend
+        if: steps.gate.outputs.skip == 'false'
+        working-directory: frontend
+        run: npm install
+
+      - name: Empacotar instalador (${{ matrix.variant }})
+        if: steps.gate.outputs.skip == 'false'
+        working-directory: frontend
+        shell: pwsh
+        env:
+          VB_VARIANT: ${{ matrix.variant }}
+        run: npm run dist:${{ matrix.variant }}
+
+      - name: Publicar artefato de build
+        if: steps.gate.outputs.skip == 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: VoiceBass-${{ matrix.variant }}
+          path: dist/installer/*.exe
+          if-no-files-found: error
+
+      # Anexa o instalador ao Release quando o disparo foi por tag.
+      # ATENÇÃO: o limite por asset do GitHub Release é 2 GB. O instalador GPU
+      # (torch CUDA) provavelmente excede esse limite — nesse caso, gere um
+      # instalador NSIS em volumes ou hospede o GPU externamente (ver README).
+      - name: Publicar no Release
+        if: steps.gate.outputs.skip == 'false' && startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/installer/*.exe
+          fail_on_unmatched_files: true

@@ -1,0 +1,58 @@
+{
+  "name": "voice-bass",
+  "version": "1.0.0",
+  "description": "Voice Bass - Alteração de voz em tempo real via IA",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "dist:cpu": "cross-env VB_VARIANT=cpu electron-builder",
+    "dist:gpu": "cross-env VB_VARIANT=gpu electron-builder"
+  },
+  "author": "William Basso",
+  "license": "MIT",
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "electron": "^33.0.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.williambasso.voicebass",
+    "productName": "Voice Bass",
+    "artifactName": "VoiceBass-${version}-${env.VB_VARIANT}.${ext}",
+    "directories": {
+      "output": "../dist/installer",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "backend-manager.js",
+      "renderer/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "../dist/backend-runtime",
+        "to": "backend-runtime"
+      },
+      {
+        "from": "../dist/ffmpeg",
+        "to": "ffmpeg"
+      },
+      {
+        "from": "../dist/models",
+        "to": "models"
+      }
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "shortcutName": "Voice Bass"
+    }
+  }
+}

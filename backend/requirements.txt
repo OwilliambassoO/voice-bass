@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+python-multipart
+websockets
+numpy
+openai-whisper
+edge-tts
+torch
+torchaudio
+soundfile
+audioseal
+ffmpeg-python
+rvc-python

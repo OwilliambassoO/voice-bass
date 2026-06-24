@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    http-equiv="Content-Security-Policy"
+    content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'"
+  />
+  <title>Voice Bass</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .loader {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      min-height: 100vh;
+      text-align: center;
+      padding: 24px;
+    }
+    .loader h1 {
+      font-size: 28px;
+      letter-spacing: 0.5px;
+    }
+    .loader .subtitle {
+      color: var(--text-muted);
+    }
+    .spinner {
+      width: 44px;
+      height: 44px;
+      border: 4px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    #status {
+      color: var(--text);
+      min-height: 1.4em;
+    }
+    #error {
+      display: none;
+      max-width: 520px;
+      color: var(--danger);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      font-size: 13px;
+      white-space: pre-wrap;
+      text-align: left;
+    }
+    #error.show { display: block; }
+    .loader.has-error .spinner { display: none; }
+  </style>
+</head>
+<body>
+  <div class="loader" id="loader">
+    <h1>Voice Bass</h1>
+    <span class="subtitle">Alteração de voz em tempo real via IA</span>
+    <div class="spinner" id="spinner"></div>
+    <p id="status">Iniciando...</p>
+    <pre id="error"></pre>
+  </div>
+
+  <script src="loader.js"></script>
+</body>
+</html>

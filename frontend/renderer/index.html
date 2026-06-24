@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    http-equiv="Content-Security-Policy"
+    content="default-src 'self'; connect-src ws://localhost:8000 http://localhost:8000; style-src 'self' 'unsafe-inline'; script-src 'self'"
+  />
+  <title>Voice Bass</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1>Voice Bass</h1>
+      <span class="subtitle">Alteração de voz em tempo real via IA</span>
+    </header>
+
+    <main class="main">
+      <!-- Status -->
+      <section class="status-bar">
+        <span id="statusDot" class="dot dot--disconnected"></span>
+        <span id="statusText">Desconectado</span>
+      </section>
+
+      <!-- Controles -->
+      <section class="controls controls--3col">
+        <div class="control-group">
+          <label for="micSelect">Microfone (entrada)</label>
+          <select id="micSelect">
+            <option value="">Carregando...</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="speakerSelect">Alto-falante (saída)</label>
+          <select id="speakerSelect">
+            <option value="">Carregando...</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="voiceSelect">Voz de saída (TTS)</label>
+          <select id="voiceSelect">
+            <option value="pt-BR-AntonioNeural">António (Masculino)</option>
+            <option value="pt-BR-FranciscaNeural">Francisca (Feminino)</option>
+            <option value="pt-BR-ThalitaNeural">Thalita (Feminino)</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="rvcModelSelect">Modelo de Voz (RVC)</label>
+          <select id="rvcModelSelect">
+            <option value="">Nenhum (bypass)</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <div class="group-label">Supressão de ruído</div>
+          <div class="radio-group">
+            <label class="radio-label">
+              <input type="checkbox" id="noiseSuppression" checked />
+              Ativada
+            </label>
+          </div>
+        </div>
+
+        <div class="control-group" role="radiogroup" aria-labelledby="hangLabel">
+          <div id="hangLabel" class="group-label">Pausa para finalizar</div>
+          <div class="radio-group">
+            <label class="radio-label">
+              <input type="radio" name="hang" value="300" />
+              300ms
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="hang" value="400" />
+              400ms
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="hang" value="500" checked />
+              500ms
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Botão principal -->
+      <section class="action">
+        <button id="btnToggle" class="btn btn--start" disabled>
+          Iniciar
+        </button>
+      </section>
+
+      <!-- Visualizadores -->
+      <section class="visualizers">
+        <div class="viz-box">
+          <span class="viz-label">Entrada (Microfone)</span>
+          <canvas id="canvasInput" width="380" height="80"></canvas>
+        </div>
+        <div class="viz-box">
+          <span class="viz-label">Saída (Processado)</span>
+          <canvas id="canvasOutput" width="380" height="80"></canvas>
+        </div>
+      </section>
+
+      <!-- Log de transcrições -->
+      <section class="log-section">
+        <h2>Transcrições</h2>
+        <div id="logContainer" class="log-container">
+          <p class="log-empty">As transcrições aparecerão aqui...</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
