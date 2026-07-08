@@ -1,0 +1,3 @@
+# Aprovador obrigatório de todos os PRs (usado pela regra
+# "Require review from Code Owners" do ruleset da branch main).
+* @OwilliambassoO
