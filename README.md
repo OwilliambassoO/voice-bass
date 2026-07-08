@@ -47,24 +47,31 @@ voice-bass/
 
 ## Download e Instalação (usuários)
 
-Para quem só quer **usar** o Voice Bass, baixe o instalador pronto — não é preciso
+Para quem só quer **usar** o Voice Bass, baixe a versão pronta — não é preciso
 instalar Python, FFmpeg nem ferramentas de compilação.
 
-1. Acesse a página de **[Releases](../../releases)** do projeto.
-2. Baixe o instalador conforme seu hardware:
-   - **`VoiceBass-<versão>-cpu.exe`** — funciona em qualquer PC Windows (recomendado).
-   - **`VoiceBass-<versão>-gpu.exe`** — mais rápido, exige GPU NVIDIA com CUDA.
-3. Execute o instalador e abra o **Voice Bass** pelo atalho criado.
-4. Na primeira execução, o app prepara os modelos localmente (alguns segundos) e
-   abre a interface. Selecione microfone, alto-falante e voz e clique em **Iniciar**.
+### Variante CPU (recomendada)
 
-> O instalador é grande (~2 GB) porque já inclui todo o backend de IA, o FFmpeg e os
-> modelos — tudo offline. **Exceção:** o Edge-TTS precisa de **internet** em tempo de
-> execução (usa os servidores de voz da Microsoft).
->
-> O instalador **GPU** pode ultrapassar o limite de 2 GB por arquivo do GitHub
-> Release; nesse caso ele é disponibilizado em volumes ou por link externo (ver notas
-> da Release).
+1. Acesse a página de **[Releases](../../releases)** do projeto.
+2. Baixe o instalador **`VoiceBass-<versão>-cpu.exe`** — funciona em qualquer PC Windows.
+3. Execute o instalador e abra o **Voice Bass** pelo atalho criado.
+
+### Variante GPU (exige NVIDIA com CUDA)
+
+A variante GPU excede o limite de 2 GB por arquivo do GitHub Release (e do formato
+NSIS), então é distribuída como **pacote portátil** `VoiceBass-<versão>-gpu.7z` por
+link externo (Google Drive), indicado nas notas da Release.
+
+1. Baixe o `.7z` pelo link nas notas da **[Release](../../releases)**.
+2. Extraia com o [7-Zip](https://www.7-zip.org/) (o Windows 11 recente também abre `.7z` nativamente).
+3. Abra a pasta extraída e execute **`Voice Bass.exe`** (não há instalador nem atalho).
+
+Na primeira execução, o app prepara os modelos localmente (alguns segundos) e abre a
+interface. Selecione microfone, alto-falante e voz e clique em **Iniciar**.
+
+> O pacote é grande (2 GB ou mais) porque já inclui todo o backend de IA, o FFmpeg e
+> os modelos — tudo offline. **Exceção:** o Edge-TTS precisa de **internet** em tempo
+> de execução (usa os servidores de voz da Microsoft).
 
 A seção abaixo (**Pré-requisitos / Instalação**) destina-se a **desenvolvedores** que
 querem rodar a partir do código-fonte ou gerar os instaladores.
@@ -154,14 +161,18 @@ Para produzir os instaladores autocontidos distribuídos aos usuários. Requer a
 #    Use -Variant gpu para a build CUDA.
 .\build\build-backend-runtime.ps1 -Variant cpu -Clean
 
-# 2) Empacota o app Electron + recursos num instalador NSIS (dist/installer/)
+# 2) Empacota o app Electron + recursos (dist/installer/)
 cd frontend
 npm install
-npm run dist:cpu   # ou: npm run dist:gpu
+npm run dist:cpu   # instalador NSIS  -> VoiceBass-<versão>-cpu.exe
+npm run dist:gpu   # pacote portátil  -> VoiceBass-<versão>-gpu.7z
 ```
 
-O CI em `.github/workflows/release.yml` automatiza ambos os builds e publica os
-`.exe` ao empurrar uma tag `v*`.
+O CI em `.github/workflows/release.yml` automatiza apenas o build **CPU** e publica
+o `.exe` no Release ao empurrar uma tag `v*`. A variante **GPU** não passa pelo CI:
+o payload com torch CUDA excede o limite do instalador NSIS (~2 GiB) e o limite de
+2 GiB por asset do GitHub Release — gere o `.7z` localmente com os comandos acima,
+hospede no Google Drive e cole o link nas notas do Release.
 
 > A versão do Python portátil baixada fica numa variável no topo de
 > `build/build-backend-runtime.ps1` — revise-a periodicamente
@@ -174,11 +185,11 @@ enunciado em curso e o envia ao Whisper quando detecta uma pausa (silêncio cont
 Não há mais escolha de buffer; o único controle de tempo exposto ao usuário é a duração
 dessa pausa, chamada de *hangover*.
 
-| Pausa    | Descrição                                                              |
-|----------|------------------------------------------------------------------------|
-| `300 ms` | Mais sensível: fecha a frase rápido, mas pode cortar em pausas curtas   |
-| `400 ms` | Intermediário                                                          |
-| `500 ms` | Padrão: evita cortar a fala em pausas naturais entre palavras           |
+| Pausa    | Descrição                                                             |
+|----------|-----------------------------------------------------------------------|
+| `300 ms` | Mais sensível: fecha a frase rápido, mas pode cortar em pausas curtas |
+| `400 ms` | Intermediário                                                         |
+| `500 ms` | Padrão: evita cortar a fala em pausas naturais entre palavras         |
 
 A captura usa blocos fixos de ~250 ms, apenas para detectar a pausa com baixa latência;
 eles não delimitam a transcrição. Enquanto o usuário fala, a transcrição parcial é
@@ -237,7 +248,7 @@ python main.py
 
 No log, você verá:
 
-```
+```plain text
 Vozes RVC encontradas: ['MeuModelo', 'OutroModelo']
 ```
 

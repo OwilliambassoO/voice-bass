@@ -1,24 +1,22 @@
 name: Release
 
-# Gera os instaladores Windows autocontidos do Voice Bass (CPU e GPU) e os
-# publica como assets de um GitHub Release ao empurrar uma tag "v*".
+# Gera o instalador Windows autocontido do Voice Bass (variante CPU) e o publica
+# como asset de um GitHub Release ao empurrar uma tag "v*".
 #
-# O runner windows-latest já traz as VS C++ Build Tools necessárias para compilar
-# fairseq. Cada variante é construída em paralelo (matrix). O job GPU baixa o torch
-# CUDA mas NÃO precisa de GPU para empacotar (torch.cuda.is_available() = False no
-# runner é esperado e não falha o build).
+# A variante GPU NÃO é construída no CI: o payload (torch CUDA) excede o limite
+# do formato NSIS (makensis é 32 bits e falha com "failed creating mmap" acima
+# de ~2 GiB) e também o limite de 2 GiB por asset do GitHub Release. O pacote
+# GPU é gerado localmente como .7z portátil (npm run dist:gpu) e hospedado no
+# Google Drive, com o link indicado nas notas do Release (ver README).
+#
+# O runner windows-latest já traz as VS C++ Build Tools necessárias para
+# compilar fairseq.
 
 on:
   push:
     tags:
       - "v*"
   workflow_dispatch:
-    inputs:
-      variant:
-        description: "Variante a construir"
-        type: choice
-        options: [both, cpu, gpu]
-        default: both
 
 permissions:
   contents: write # necessário para criar/atualizar o Release
@@ -26,10 +24,6 @@ permissions:
 jobs:
   build:
     runs-on: windows-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        variant: [cpu, gpu]
     steps:
       - uses: actions/checkout@v4
 
@@ -37,50 +31,31 @@ jobs:
         with:
           node-version: "20"
 
-      # Filtro do workflow_dispatch: pula a variante não solicitada.
-      - name: Resolver variante
-        id: gate
+      - name: Construir runtime do backend (cpu)
         shell: pwsh
-        run: |
-          $sel = "${{ github.event.inputs.variant }}"
-          if ($sel -and $sel -ne "both" -and $sel -ne "${{ matrix.variant }}") {
-            echo "skip=true" >> $env:GITHUB_OUTPUT
-          } else {
-            echo "skip=false" >> $env:GITHUB_OUTPUT
-          }
-
-      - name: Construir runtime do backend (${{ matrix.variant }})
-        if: steps.gate.outputs.skip == 'false'
-        shell: pwsh
-        run: ./build/build-backend-runtime.ps1 -Variant ${{ matrix.variant }} -Clean
+        run: ./build/build-backend-runtime.ps1 -Variant cpu -Clean
 
       - name: Instalar dependências do frontend
-        if: steps.gate.outputs.skip == 'false'
         working-directory: frontend
         run: npm install
 
-      - name: Empacotar instalador (${{ matrix.variant }})
-        if: steps.gate.outputs.skip == 'false'
+      - name: Empacotar instalador (cpu)
         working-directory: frontend
         shell: pwsh
         env:
-          VB_VARIANT: ${{ matrix.variant }}
-        run: npm run dist:${{ matrix.variant }}
+          VB_VARIANT: cpu
+        run: npm run dist:cpu
 
       - name: Publicar artefato de build
-        if: steps.gate.outputs.skip == 'false'
         uses: actions/upload-artifact@v4
         with:
-          name: VoiceBass-${{ matrix.variant }}
+          name: VoiceBass-cpu
           path: dist/installer/*.exe
           if-no-files-found: error
 
       # Anexa o instalador ao Release quando o disparo foi por tag.
-      # ATENÇÃO: o limite por asset do GitHub Release é 2 GB. O instalador GPU
-      # (torch CUDA) provavelmente excede esse limite — nesse caso, gere um
-      # instalador NSIS em volumes ou hospede o GPU externamente (ver README).
       - name: Publicar no Release
-        if: steps.gate.outputs.skip == 'false' && startsWith(github.ref, 'refs/tags/')
+        if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
           files: dist/installer/*.exe

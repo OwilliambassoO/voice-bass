@@ -6,8 +6,8 @@
   "scripts": {
     "start": "electron .",
     "dev": "electron . --dev",
-    "dist:cpu": "cross-env VB_VARIANT=cpu electron-builder",
-    "dist:gpu": "cross-env VB_VARIANT=gpu electron-builder"
+    "dist:cpu": "cross-env VB_VARIANT=cpu electron-builder --publish never",
+    "dist:gpu": "cross-env VB_VARIANT=gpu electron-builder --win 7z --publish never"
   },
   "author": "William Basso",
   "license": "MIT",
