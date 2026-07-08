@@ -1,9 +1,23 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, ipcMain, shell } = require("electron");
 const path = require("path");
+const fs = require("fs");
 const { BackendManager } = require("./backend-manager");
 
 const backend = new BackendManager();
 let win = null;
+
+// Abre a pasta de vozes RVC (criando-a se não existir) para o usuário soltar
+// os modelos. Chamado pelo renderer via preload (botão "+" ao lado do seletor).
+ipcMain.handle("voices:open", async () => {
+  const dir = backend.voicesDir;
+  try {
+    fs.mkdirSync(dir, { recursive: true });
+    const error = await shell.openPath(dir); // "" em sucesso; string de erro caso falhe
+    return { ok: error === "", error: error || null, path: dir };
+  } catch (err) {
+    return { ok: false, error: String(err?.message ?? err), path: dir };
+  }
+});
 
 function createWindow() {
   win = new BrowserWindow({

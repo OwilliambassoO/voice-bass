@@ -80,6 +80,13 @@ class BackendManager {
     return path.join(this.userDataDir, "logs", "backend.log");
   }
 
+  // Pasta onde o usuário adiciona modelos de voz RVC (uma subpasta por voz).
+  // Espelha o cwd do backend: backend/voices em dev e
+  // resources/backend-runtime/app/voices no app empacotado.
+  get voicesDir() {
+    return path.join(this._paths().cwd, "voices");
+  }
+
   // 1º uso (apenas empacotado): copia os modelos embutidos para um diretório
   // gravável, evitando escrever em Program Files. É só cópia local, sem rede.
   _ensureModelCache(paths, onStatus) {

@@ -51,9 +51,18 @@
 
         <div class="control-group">
           <label for="rvcModelSelect">Modelo de Voz (RVC)</label>
-          <select id="rvcModelSelect">
-            <option value="">Nenhum (bypass)</option>
-          </select>
+          <div class="select-with-action">
+            <select id="rvcModelSelect">
+              <option value="">Nenhum (bypass)</option>
+            </select>
+            <button
+              id="btnOpenVoices"
+              type="button"
+              class="btn-icon"
+              aria-label="Abrir a pasta de vozes RVC"
+              title="Adicionar voz: baixe um modelo RVC (.pth e, opcionalmente, .index), crie aqui uma pasta com o nome da voz e coloque os arquivos dentro, depois reinicie o app. Clique para abrir esta pasta."
+            >+</button>
+          </div>
         </div>
 
         <div class="control-group">

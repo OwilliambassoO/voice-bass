@@ -11,7 +11,16 @@ export class Controls {
     this.speakerSelect = document.getElementById("speakerSelect");
     this.voiceSelect = document.getElementById("voiceSelect");
     this.rvcModelSelect = document.getElementById("rvcModelSelect");
+    this.btnOpenVoices = document.getElementById("btnOpenVoices");
     this.btnToggle = document.getElementById("btnToggle");
+
+    // Botão "+": abre (criando se necessário) a pasta onde o usuário coloca os
+    // modelos RVC. A ação roda no processo main via bridge do preload.
+    if (this.btnOpenVoices) {
+      this.btnOpenVoices.addEventListener("click", () => {
+        window.voiceBass?.openVoicesFolder?.();
+      });
+    }
     this.logContainer = document.getElementById("logContainer");
     this.canvasInput = document.getElementById("canvasInput");
     this.canvasOutput = document.getElementById("canvasOutput");

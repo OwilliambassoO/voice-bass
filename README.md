@@ -189,6 +189,8 @@ vez para a frase inteira.
 
 O RVC (Retrieval-based Voice Conversion) converte o áudio gerado pelo Edge-TTS para soar como uma voz-alvo. Para adicionar uma nova voz, siga os passos abaixo.
 
+> **Atalho (recomendado):** na interface, clique no botão **+** ao lado do seletor **Modelo de Voz (RVC)** para abrir a pasta de vozes (ela é criada se ainda não existir). Coloque o modelo lá conforme os passos abaixo e reinicie o app. Funciona tanto no modo dev quanto no app instalado — neste, a pasta fica num caminho interno e o botão evita ter que procurá-la manualmente.
+
 ### 1. Obter os arquivos do modelo
 
 Cada modelo RVC é composto por:
