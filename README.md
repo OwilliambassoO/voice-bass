@@ -2,6 +2,10 @@
 
 Sistema de alteração de voz em tempo real via IA. Captura áudio do microfone, transcreve com Whisper (STT), sintetiza com Edge-TTS, aplica conversão vocal (RVC) e injeta marca d'água com AudioSeal.
 
+## ⚠️ Termo de Uso
+
+O uso do Voice Bass é **condicionado ao consentimento do titular da voz** clonada e **veda usos fraudulentos, de falsificação de identidade e outros usos indevidos**; o software é fornecido "no estado em que se encontra" e o autor **não se responsabiliza** por usos indevidos praticados por terceiros. Leia o **[Termo de Uso completo](TERMO_DE_USO.md)** antes de baixar ou usar.
+
 ## Arquitetura
 
 ```plain text
